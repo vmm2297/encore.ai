@@ -89,7 +89,7 @@ It was the best night, never would forget how he moved.
 If you want to use our model to train your own artists, follow these steps:
 
 1. Pick an artist – it should be someone with a lot of lyrics. (Over 100,000 words).
-2. Collect all of the artist's lyrics from your favorite lyrics website. Save each song as a text file in `data/artist_name/`. We recommend leaving newlines in as a special token so that the network will learn line and stanza breaks.
+2. Collect all of the artist's lyrics from your favorite lyrics website. Save each song as a text file in `data/artists/artist_name/`. We recommend leaving newlines in as a special token so that the network will learn line and stanza breaks.
 3. Train by navigating to the `code` directory and running  `python runner.py -a <artist_name> -m <model_save_name>`.
   - Our models were all trained for 30,000 steps.
 4. Generate new songs by  running  <br />`python runner.py -a <artist_name> -l ../save/models/<model_save_name>/<ckpt_file> -t`.

@@ -1,9 +1,6 @@
 import numpy as np
 import os
 import random
-from collections import Counter
-
-import constants as c
 
 class DataReader:
     def __init__(self, artist_name):
