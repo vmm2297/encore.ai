@@ -1,7 +1,6 @@
 # inspired by https://github.com/hunkim/word-rnn-tensorflow
 
 import tensorflow as tf
-from tensorflow.python.ops import rnn_cell, seq2seq
 import numpy as np
 
 import constants as c
@@ -45,8 +44,8 @@ class LSTMModel:
         # LSTM Cells
         ##
 
-        lstm_cell = rnn_cell.BasicLSTMCell(self.cell_size)
-        self.cell = rnn_cell.MultiRNNCell([lstm_cell] * self.num_layers)
+        lstm_cell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)	#Py3Upgrade, TF1.0 change, lib classification
+        self.cell = tf.contrib.rnn.MultiRNNCell([lstm_cell] * self.num_layers)	#Py3Upgrade, TF1.0 change, lib classification
 
         ##
         # Data
@@ -71,7 +70,7 @@ class LSTMModel:
                 # The split splits this tensor into a seq_len long list of 3D tensors of shape
                 # [batch_size, 1, rnn_size]. The squeeze removes the 1 dimension from the 1st axis
                 # of each tensor
-                inputs_split = tf.split(1, self.seq_len, input_embeddings)
+                inputs_split = tf.split(input_embeddings, self.seq_len, 1)		##Py3Upgrade, TF1.0 change, value and axis for split()
                 inputs_split = [tf.squeeze(input_, [1]) for input_ in inputs_split]
 
 
@@ -95,12 +94,12 @@ class LSTMModel:
             prev_symbol = tf.stop_gradient(tf.argmax(prev, 1))
             return tf.nn.embedding_lookup(self.embeddings, prev_symbol)
 
-        lstm_outputs_split, self.final_state = seq2seq.rnn_decoder(inputs_split,
+        lstm_outputs_split, self.final_state = tf.contrib.legacy_seq2seq.rnn_decoder(inputs_split,
                                                                    self.initial_state,
                                                                    self.cell,
                                                                    loop_function=loop if test else None,
-                                                                   scope='lstm_vars')
-        lstm_outputs = tf.reshape(tf.concat(1, lstm_outputs_split), [-1, self.cell_size])
+                                                                   scope='lstm_vars')	#Py3Upgrade, TF1.0 change, lib classification for seq2seq
+        lstm_outputs = tf.reshape(tf.concat(lstm_outputs_split, 1), [-1, self.cell_size])	#Py3Upgrade, TF1.0 change, value and axis for concat()
 
         # outputs looks like this:
         # [
@@ -138,10 +137,10 @@ class LSTMModel:
         # Train
         ##
 
-        total_loss = seq2seq.sequence_loss_by_example([logits],
+        total_loss = tf.contrib.legacy_seq2seq.sequence_loss_by_example([logits],
                                                       [tf.reshape(self.targets, [-1])],
                                                       [tf.ones([self.batch_size * self.seq_len])],
-                                                      self.vocab_size)
+                                                      self.vocab_size)	#Py3Upgrade, TF1.0 change, lib classification tf.contrib.legacy_seq2seq
         self.loss = tf.reduce_sum(total_loss) / self.batch_size / self.seq_len
 
         self.global_step = tf.Variable(0, trainable=False, name='global_step')
@@ -172,7 +171,7 @@ class LSTMModel:
 
         # prime the model state
         for word in prime.split():
-            print word
+            print (word)	#Py3Upgrade
             last_word_i = self.vocab.index(word)
             input_i = np.array([[last_word_i]])
 
@@ -181,7 +180,7 @@ class LSTMModel:
 
         # generate the sequence
         gen_seq = prime
-        for i in xrange(num_out):
+        for i in range(num_out):	#Py3Upgrade, xrange to range
             # generate word probabilities
             input_i = np.array([[last_word_i]]) #TODO: use dictionary?
             feed_dict = {self.inputs: input_i, self.initial_state: state}

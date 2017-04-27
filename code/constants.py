@@ -15,7 +15,7 @@ NUM_LAYERS = 2
 ##
 
 # Learning rate for training.
-L_RATE = 0.002
+L_RATE = 0.0000000000001
 # Number of sequences in a training batch.
 BATCH_SIZE = 50
 # Length of sequence to train on,

@@ -2,6 +2,8 @@ import numpy as np
 import os
 import random
 
+from functools import reduce
+
 class DataReader:
     def __init__(self, artist_name):
         self.artist = artist_name
@@ -36,7 +38,7 @@ class DataReader:
             self.load_lyrics()
 
         # Collapses the 2D array to a 1D array of words
-        all_words = reduce(lambda a,b: a + b, self.lyrics)
+        all_words = reduce(lambda a,b: a + b, self.lyrics)	#Py3Upgrade, functools.reduce
 
         # TODO: Find out why this UNK code causes differences between Linux and OS X vocabularies
         # # convert THRESHOLD_COUNT frequent words to '*UNK*'
@@ -56,10 +58,10 @@ class DataReader:
         # creates a map from word to index
         self.vocab_lookup = dict((word, i) for i, word in enumerate(tokens))
         # Converts words in self.lyrics to the appropriate indices.
-        self.lyric_indices = [map(lambda word: self.vocab_lookup[word], song)
+        self.lyric_indices = [list(map(lambda word: self.vocab_lookup[word], song))	#Py3Upgrade, map not iterable
                               for song in self.lyrics]
 
-        print len(tokens)
+        print (len(tokens))
 
         return tokens
 
@@ -75,7 +77,7 @@ class DataReader:
         inputs = np.empty([batch_size, seq_len], dtype=int)
         targets = np.empty([batch_size, seq_len], dtype=int)
 
-        for i in xrange(batch_size):
+        for i in range(batch_size):	#Py3Upgrade, xrange to range
             inp, target = self.get_seq(seq_len)
             inputs[i] = inp
             targets[i] = target
@@ -91,7 +93,7 @@ class DataReader:
         @return: A tuple of sequences, (input, target) offset from each other by one word.
         """
         # Pick a random song. Must be longer than seq_len
-        for i in xrange(1000):  # cap at 1000 tries
+        for i in range(1000):  # cap at 1000 tries, Py3Upgrade
             song = random.choice(self.lyric_indices)
             if len(song) > seq_len: break
 
