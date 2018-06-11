@@ -95,3 +95,7 @@ If you want to use our model to train your own artists, follow these steps:
 4. Generate new songs by  running  <br />`python runner.py -a <artist_name> -l ../save/models/<model_save_name>/<ckpt_file> -t`.
   - Optional: If you would like to specify "prime text"  – the initial text that the model will generate from – pass in a string with the `-p` flag.
 5. Share your trained models with us so we can feature them on our website! Create an issue with a link to a public Dropbox or Google Drive containing your model's .ckpt file.
+
+##  LICENSE status:
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsingh-abhijeet%2Fencore.ai.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsingh-abhijeet%2Fencore.ai?ref=badge_large)
